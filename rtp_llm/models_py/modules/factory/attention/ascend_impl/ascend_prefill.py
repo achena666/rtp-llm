@@ -156,8 +156,8 @@ class AscendPrefillAttnOp:
         # Zero-copy K/V half views (base[:, 0/1]), matching the write op and
         # decode read addressing.
         base = kv_cache.kv_cache_base
-        k_cache = base[:, 0].reshape(base.shape[0], base.shape[2], -1)
-        v_cache = base[:, 1].reshape(base.shape[0], base.shape[2], -1)
+        k_cache = base[:, 0].reshape(base.shape[0], base.shape[2], -1).contiguous()
+        v_cache = base[:, 1].reshape(base.shape[0], base.shape[2], -1).contiguous()
         return k_cache, v_cache, base.shape[2]
 
     def forward(self, q, kv_cache):

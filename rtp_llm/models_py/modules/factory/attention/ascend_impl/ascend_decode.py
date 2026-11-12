@@ -268,8 +268,8 @@ class AscendDecodeAttnOp:
         # Zero-copy kernel-block K/V views in the 3-D form FIA requires
         # (the old split_kv_kernel_blocks route materialised a copy).
         base = kv_cache.kv_cache_base
-        k_cache = base[:, 0].reshape(base.shape[0], base.shape[2], -1)
-        v_cache = base[:, 1].reshape(base.shape[0], base.shape[2], -1)
+        k_cache = base[:, 0].reshape(base.shape[0], base.shape[2], -1).contiguous()
+        v_cache = base[:, 1].reshape(base.shape[0], base.shape[2], -1).contiguous()
         return k_cache, v_cache, base.shape[2]
 
     def _forward_fia_graph(self, q, kv_cache, block_table, context_lens):
