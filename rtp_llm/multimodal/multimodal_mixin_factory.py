@@ -3,6 +3,7 @@ import logging
 from rtp_llm.config.engine_config import EngineConfig
 from rtp_llm.config.model_config import ModelConfig
 from rtp_llm.config.py_config_modules import VitConfig
+from rtp_llm.device.device_type import device_name
 from rtp_llm.multimodal.mm_process_engine import MMProcessEngine
 from rtp_llm.multimodal.multimodal_mixin_register import (
     _multimodal_mixin_factory,
@@ -18,7 +19,7 @@ class MultimodalMixinFactory:
         model_config: ModelConfig,
         engine_config: EngineConfig,
         vit_config: VitConfig,
-        device: str = "cuda:0",
+        device: str = f"{device_name()}:0",
     ) -> BaseMultiModalMixin:
         if not model_config.mm_model_config.is_multimodal:
             logging.info("No multimodal model, skip create multimodal mixin")
@@ -38,7 +39,7 @@ class MultimodalMixinFactory:
         model_config: ModelConfig,
         engine_config: EngineConfig,
         vit_config: VitConfig,
-        device: str = "cuda:0",
+        device: str = f"{device_name()}:0",
         server_id: int = 0,
         is_proxy_mode: bool = False,
     ) -> MMProcessEngine:
