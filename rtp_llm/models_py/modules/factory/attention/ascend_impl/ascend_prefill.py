@@ -153,8 +153,9 @@ class AscendPrefillAttnOp:
         self.actual_seq_kv = seq_lens_kv
 
     def _split_kv(self, kv_cache):
-        # Zero-copy K/V half views (base[:, 0/1]), matching the write op and
-        # decode read addressing.
+        # K/V half views (base[:, 0/1]), matching the write op and decode read
+        # addressing. base[:, 0/1] is a strided view; FIA v2 on CANN 9.1.0
+        # needs contiguous inputs, hence the .contiguous() copy.
         base = kv_cache.kv_cache_base
         k_cache = base[:, 0].reshape(base.shape[0], base.shape[2], -1).contiguous()
         v_cache = base[:, 1].reshape(base.shape[0], base.shape[2], -1).contiguous()

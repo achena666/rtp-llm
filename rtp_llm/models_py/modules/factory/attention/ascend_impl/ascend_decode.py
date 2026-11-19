@@ -265,8 +265,10 @@ class AscendDecodeAttnOp:
         return self._forward_fia(q, kv_cache, block_table, context_lens)
 
     def _split_kv(self, kv_cache):
-        # Zero-copy kernel-block K/V views in the 3-D form FIA requires
-        # (the old split_kv_kernel_blocks route materialised a copy).
+        # Kernel-block K/V views reshaped to the 3-D form FIA requires.
+        # kv_cache_base is [blocks, 2, page, heads*dim], so base[:, 0/1] is a
+        # strided (non-contiguous) view; FIA v2 on CANN 9.1.0 needs contiguous
+        # inputs, hence .contiguous() copies the per-layer pool on every step.
         base = kv_cache.kv_cache_base
         k_cache = base[:, 0].reshape(base.shape[0], base.shape[2], -1).contiguous()
         v_cache = base[:, 1].reshape(base.shape[0], base.shape[2], -1).contiguous()
